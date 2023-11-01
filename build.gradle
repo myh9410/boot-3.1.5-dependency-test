@@ -27,6 +27,10 @@ dependencies {
 	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
 
+	//lombok
+	implementation 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
