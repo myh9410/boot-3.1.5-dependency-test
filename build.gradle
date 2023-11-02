@@ -32,6 +32,16 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	//test container
+	testImplementation 'org.testcontainers:testcontainers:1.19.1'
+	testImplementation 'org.testcontainers:junit-jupiter:1.19.1'
+	testImplementation 'org.testcontainers:mysql:1.19.1'
+
+	//mysqlDB 커넥터 변경
+	// 'mysql:mysql-connector-java' -> 'com.mysql:mysql-connector-j'으로 변경
+	// https://dev.mysql.com/doc/relnotes/connector-j/8.0/en/news-8-0-31.html 참고
+	implementation 'com.mysql:mysql-connector-j'
 }
 
 tasks.named('test') {
