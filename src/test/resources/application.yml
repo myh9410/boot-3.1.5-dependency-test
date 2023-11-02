@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    active: test
+  jpa:
+    output:
+      ansi:
+        enabled: always
+  datasource:
+    url: jdbc:tc:mysql:8.0.23:///test
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    username:
+    password:
+    hikari:
+      maximum-pool-size: 5
