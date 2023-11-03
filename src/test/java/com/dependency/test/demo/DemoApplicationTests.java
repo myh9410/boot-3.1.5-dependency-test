@@ -50,6 +50,7 @@ class DemoApplicationTests {
 		hikariDataSource.setUsername(USER_NAME);
 		hikariDataSource.setPassword(USER_PASSWORD);
 		hikariDataSource.setJdbcUrl(mysqlContainer.getJdbcUrl());
+		hikariDataSource.setMaximumPoolSize(5);
 		jdbcTemplate = new JdbcTemplate(hikariDataSource);
 	}
 
@@ -74,9 +75,14 @@ class DemoApplicationTests {
 
 	@Test
 	void checkInitSqlExecuted() {
-		Optional<Users> optionalUsers = usersRepository.findById(1L);
+		Optional<Users> optionalUsers1 = usersRepository.findById(1L);
+		Optional<Users> optionalUsers2 = usersRepository.findById(2L);
 
-		System.out.println(optionalUsers.get());
+		assertTrue(optionalUsers1.isPresent());
+		assertEquals(optionalUsers1.get().getUserId(), "user1");
+
+		assertTrue(optionalUsers2.isPresent());
+		assertEquals(optionalUsers2.get().getUserId(), "user2");
 	}
 
 }
