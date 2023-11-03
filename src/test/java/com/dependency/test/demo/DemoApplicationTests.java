@@ -1,14 +1,23 @@
 package com.dependency.test.demo;
 
-import org.junit.ClassRule;
+import com.dependency.test.demo.domains.users.Users;
+import com.dependency.test.demo.domains.users.UsersRepository;
+import com.zaxxer.hikari.HikariDataSource;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
@@ -17,12 +26,57 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class DemoApplicationTests {
 
-	@ClassRule
-	public MySQLContainer mysqlContainer = new MySQLContainer();
+	@Autowired
+	UsersRepository usersRepository;
+
+	private static String SCHEMA = "test";
+	private static String USER_NAME = "test_user";
+	private static String USER_PASSWORD = "test_password";
+
+	private static JdbcTemplate jdbcTemplate;
+
+	@Container
+	private static MySQLContainer mysqlContainer = new MySQLContainer("mysql:8")
+			.withUsername(USER_NAME)
+			.withPassword(USER_PASSWORD);
+
+	@BeforeAll
+	static void startUp() {
+//		mysqlContainer.withInitScript("src/test/resources/sql/init.sql");
+		mysqlContainer.start();
+
+		HikariDataSource hikariDataSource = new HikariDataSource();
+		hikariDataSource.setDriverClassName(mysqlContainer.getDriverClassName());
+		hikariDataSource.setUsername(USER_NAME);
+		hikariDataSource.setPassword(USER_PASSWORD);
+		hikariDataSource.setJdbcUrl(mysqlContainer.getJdbcUrl());
+		jdbcTemplate = new JdbcTemplate(hikariDataSource);
+	}
+
+	@AfterAll
+	static void endUp() {
+		mysqlContainer.close();
+	}
+
 	@Test
-	void test() {
-		assertFalse(mysqlContainer.isRunning());
-		System.out.println("test end");
+	void startUpSuccess() {
+		assertTrue(mysqlContainer.isCreated());
+		assertTrue(mysqlContainer.isRunning());
+	}
+
+	@Test
+	void checkDatabaseInitInfo() {
+		assertEquals(mysqlContainer.getDatabaseName(), SCHEMA);
+		assertEquals(mysqlContainer.getUsername(), USER_NAME);
+		assertEquals(mysqlContainer.getPassword(), USER_PASSWORD);
+		assertEquals(mysqlContainer.getTestQueryString(), "SELECT 1");
+	}
+
+	@Test
+	void checkInitSqlExecuted() {
+		Optional<Users> optionalUsers = usersRepository.findById(1L);
+
+		System.out.println(optionalUsers.get());
 	}
 
 }

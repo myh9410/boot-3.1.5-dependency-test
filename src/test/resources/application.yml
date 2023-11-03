@@ -6,7 +6,7 @@ spring:
       ansi:
         enabled: always
   datasource:
-    url: jdbc:tc:mysql:8.0.23:///test
+    url: jdbc:tc:mysql:8.0.23:///test?TC_INITSCRIPT=file:src/test/resources/sql/init.sql
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     username:
     password:
