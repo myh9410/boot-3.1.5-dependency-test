@@ -37,6 +37,7 @@ dependencies {
 	testImplementation 'org.testcontainers:testcontainers:1.19.1'
 	testImplementation 'org.testcontainers:junit-jupiter:1.19.1'
 	testImplementation 'org.testcontainers:mysql:1.19.1'
+	testImplementation "org.testcontainers:oracle-xe:1.19.1"
 
 	//mysqlDB 커넥터 변경
 	// 'mysql:mysql-connector-java' -> 'com.mysql:mysql-connector-j'으로 변경
